@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Avatar</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .form-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      label {
+        display: block;
+        margin: 10px 0 5px;
+      }
+      input[type="text"],
+      input[type="file"],
+      input[type="email"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Upload Avatar</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="Enter email"
+          required
+        />
+
+        <label for="title">Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Enter title"
+          required
+        />
+
+        <label for="avatar">Choose Image</label>
+        <input
+          type="file"
+          id="avatar"
+          name="avatar"
+          accept="image/*"
+          required
+        />
+
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("uploadForm");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const title = formData.get("title");
+        const avatar = formData.get("avatar");
+        const email = formData.get("email"); // Get email from form data
+
+        try {
+          const response = await fetch("http://localhost:5000/upload-avatar", {
+            method: "POST",
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (data.status === "success") {
+            alert("Avatar uploaded successfully!");
+            form.reset(); // Reset the form
+          } else {
+            alert("Error: " + data.error);
+          }
+        } catch (error) {
+          alert("Error uploading avatar: " + error.message);
+        }
+      });
+    </script>
+  </body>
+</html>
