@@ -1,7 +1,5 @@
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const { getName, getAvatar } = require("../supabase/queries");
-const { upload } = require("../cloud_bucket_upload/cloudinary");
+const { getName, getAvatar, getNotification } = require("../supabase/queries");
 const supabase = require('../supabase/db-connection')
 require("dotenv").config();
 
@@ -29,6 +27,13 @@ const getAvatarImage = async (req, res) => {
   }
 };
 
+const getStudentNotification = async (req, res) => {
+  try {
+    await getNotification(req, res);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 const uploadAvatar = async (req, res) => {
   try {
@@ -70,4 +75,4 @@ const uploadAvatar = async (req, res) => {
   }
 };
 
-module.exports = { getStudentName, getAvatarImage, uploadAvatar };
+module.exports = { getStudentName, getAvatarImage, uploadAvatar, getStudentNotification };

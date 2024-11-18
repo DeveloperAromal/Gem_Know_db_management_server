@@ -50,4 +50,31 @@ async function getAvatar(req, res) {
   }
 }
 
-module.exports = { getName, getAvatar };
+async function getNotification(req, res) {
+  const { email, class: className, div } = req.query;
+
+  try {
+    const { data, error } = await supabase
+      .from("notification")
+      .select("message")
+      .eq("email", email)
+      .eq("class", className)
+      .eq("div", div);
+
+    if (error) {
+      console.error('Error occurred while fetching notification:', error);
+      return res.status(500).json({ error: "An unexpected error occurred" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "No notifications found" });
+    }
+
+    res.json({ status: "success", data });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+}
+
+module.exports = { getName, getAvatar, getNotification };

@@ -6,7 +6,6 @@ const { upload } = require("../cloud_bucket_upload/cloudinary");
 
 const router = express.Router();
 
-// Route to fetch student name
 router.get("/name", async (req, res) => {
   const { email } = req.query;
 
@@ -17,7 +16,6 @@ router.get("/name", async (req, res) => {
   await getName(req, res);
 });
 
-// Route to fetch student avatar
 router.get("/avatar", async (req, res) => {
   const { email } = req.query;
 
@@ -27,6 +25,17 @@ router.get("/avatar", async (req, res) => {
 
   await getAvatar(req, res);
 });
+
+router.get("/notification", async (req, res) => {
+  const { email, class: className, div } = req.query;
+
+  if (!email || !className || !div) {
+  return res.status(400).json({ error: "Email, class, and div parameters are required" });
+}
+
+  await getNotification(req, res);
+});
+
 
 router.post("/upload-avatar", upload.single("avatar"), uploadAvatar);
 
