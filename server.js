@@ -11,10 +11,9 @@ const {
   uploadTimetable,
   getStudentsTimeTable,
   getStudentsTicket,
-
+  getStudentsExamResult,
 } = require("./controls/student-controls");
 const { upload } = require("./cloud_bucket_upload/cloudinary");
-
 
 const app = express();
 const port = 5000;
@@ -92,7 +91,9 @@ app.get("/timetable", async (req, res) => {
   try {
     const { className, div } = req.query;
     if (!className || !div) {
-      return res.status(400).json({ error: "class, and div parameters are required" });
+      return res
+        .status(400)
+        .json({ error: "class, and div parameters are required" });
     }
     await getStudentsTimeTable(req, res);
   } catch (error) {
@@ -114,10 +115,43 @@ app.get("/ticket", async (req, res) => {
   }
 });
 
+app.get("/notes", async (req, res) => {
+  try {
+    const { className, div } = req.query;
+    if (!className || !div) {
+      return res
+        .status(400)
+        .json({ error: "class, and div parameters are required" });
+    }
+    await getStudentsTimeTable(req, res);
+  } catch (error) {
+    console.error("Error in /notes route:", error);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+});
+
+app.get("/result", async (req, res) => {
+  try {
+    const { admNo,examName } = req.query;
+    if (!admNo || !examName) {
+      return res
+        .status(400)
+        .json({ error: "admNo parameters are required" });
+    }
+    await getStudentsExamResult(req, res);
+  } catch (error) {
+    console.error("Error in /result route:", error);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+});
+
 app.post("/upload-avatar", upload.single("avatar"), uploadAvatar);
 app.post("/upload-timetable", upload.single("timetable"), uploadTimetable);
 
 app.listen(port, () => {
-  console.log('\x1b[32m%s\x1b[0m', `\n ✓ Server is running on port ${port} 🔥`);
-  console.log('\x1b[36m%s\x1b[0m', ` ✓ Follow this link: http://localhost:${port}`);
+  console.log("\x1b[32m%s\x1b[0m", `\n ✓ Server is running on port ${port} 🔥`);
+  console.log(
+    "\x1b[36m%s\x1b[0m",
+    ` ✓ Follow this link: http://localhost:${port}`
+  );
 });

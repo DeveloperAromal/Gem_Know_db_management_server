@@ -7,7 +7,9 @@ const {
   getAbsentese,
   getTimeTable,
   getMessages,
-  getTicketData
+  getTicketData,
+  getClassNotes,
+  getresult
 } = require("../supabase/queries");
 const supabase = require("../supabase/db-connection");
 require("dotenv").config();
@@ -69,6 +71,22 @@ const getStudentsTimeTable = async (req, res) => {
 const getStudentsTicket = async (req, res) => {
   try {
     await getTicketData(req, res);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getStudentsNotes = async (req, res) => {
+  try {
+    await getClassNotes(req, res);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getStudentsExamResult = async (req, res) => {
+  try {
+    await getresult(req, res);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -168,4 +186,6 @@ module.exports = {
   uploadTimetable,
   getStudentsTimeTable,
   getStudentsTicket,
+  getStudentsNotes,
+  getStudentsExamResult,
 };

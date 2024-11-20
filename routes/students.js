@@ -5,6 +5,9 @@ const {
   getUserData,
   getNotification,
   getAbsentese,
+  getTimeTable,
+  getClassNotes,
+  getresult
 } = require("../supabase/queries");
 const {
   uploadAvatar,
@@ -90,7 +93,31 @@ router.get("/timetable", async (req, res) => {
       .json({ error: "class, and div parameters are required" });
   }
 
-  await getAvatar(req, res);
+  await getTimeTable(req, res);
+});
+
+router.get("/notes", async (req, res) => {
+  const { className, div } = req.query;
+
+  if (!className || !div) {
+    return res
+      .status(400)
+      .json({ error: "class, and div parameters are required" });
+  }
+
+  await getClassNotes(req, res);
+});
+
+router.get("/result", async (req, res) => {
+  const { admNo, examName } = req.query;
+
+  if (!admNo || !examName) {
+    return res
+      .status(400)
+      .json({ error: "admNo, and examName parameters are required" });
+  }
+
+  await getresult(req, res);
 });
 
 router.post("/upload-avatar", upload.single("avatar"), uploadAvatar);

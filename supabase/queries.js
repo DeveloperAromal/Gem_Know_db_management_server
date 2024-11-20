@@ -155,6 +155,59 @@ async function getTimeTable(req, res) {
   }
 }
 
+async function getClassNotes(req, res) {
+  const { className, div } = req.query;
+
+  try {
+    const { data, error } = await supabase
+      .from("notes")
+      .select("url, title")
+      .eq("className", className)
+      .eq("div", div);
+
+    if (error) {
+      console.error("Error fetching timetable:", error);
+      return res.status(500).json({ error: "notes not found" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "notes not found" });
+    }
+
+    res.json({ status: "success", data: data[0] });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+}
+
+async function getresult(req, res) {
+  const { admNo, examName } = req.query;
+
+  try {
+    const { data, error } = await supabase
+      .from("result")
+      .select("*")
+      .eq("admNo", admNo)
+      .eq("examName", examName);
+
+    if (error) {
+      console.error("Error fetching exam result:", error);
+      return res.status(500).json({ error: "exam result not found" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "exam result not found" });
+    }
+
+    res.json({ status: "success", data: data[0] });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+}
+
+
 async function getTicketData(req, res) {
   const { admNo } = req.query;
 
@@ -188,4 +241,6 @@ module.exports = {
   getAbsentese,
   getTimeTable,
   getTicketData,
+  getClassNotes,
+  getresult,
 };
