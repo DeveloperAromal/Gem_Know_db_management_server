@@ -51,13 +51,13 @@ async function getUserData(req, res) {
 }
 
 async function getAvatar(req, res) {
-  const { email } = req.query;
+  const { admNo } = req.query;
 
   try {
     const { data, error } = await supabase
       .from("avatars")
       .select("url, title")
-      .eq("email", email);
+      .eq("admNo", admNo);
 
     if (error) {
       console.error("Error fetching avatar:", error);
@@ -103,15 +103,13 @@ async function getNotification(req, res) {
 }
 
 async function getAbsentese(req, res) {
-  const { email, className, div } = req.query;
+  const { admNo } = req.query;
 
   try {
     const { data, error } = await supabase
       .from("absent")
-      .select("day, month")
-      .eq("email", email)
-      .eq("className", className)
-      .eq("div", div);
+      .select("monthData")
+      .eq("admNo", admNo);
 
     if (error) {
       console.error("Error occurred while fetching notification:", error);
@@ -181,7 +179,7 @@ async function getClassNotes(req, res) {
   }
 }
 
-async function getresult(req, res) {
+async function getResult(req, res) {
   const { admNo, examName } = req.query;
 
   try {
@@ -198,6 +196,31 @@ async function getresult(req, res) {
 
     if (data.length === 0) {
       return res.status(404).json({ error: "exam result not found" });
+    }
+
+    res.json({ status: "success", data: data[0] });
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+}
+
+async function getFeesData(req, res) {
+  const { admNo } = req.query;
+
+  try {
+    const { data, error } = await supabase
+      .from("fees")
+      .select("*")
+      .eq("admNo", admNo)
+
+    if (error) {
+      console.error("Error fetching Fees data:", error);
+      return res.status(500).json({ error: "Fees data not found" });
+    }
+
+    if (data.length === 0) {
+      return res.status(404).json({ error: "Fees data not found" });
     }
 
     res.json({ status: "success", data: data[0] });
@@ -242,5 +265,6 @@ module.exports = {
   getTimeTable,
   getTicketData,
   getClassNotes,
-  getresult,
+  getResult,
+  getFeesData
 };

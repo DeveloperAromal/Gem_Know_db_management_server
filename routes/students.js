@@ -7,7 +7,8 @@ const {
   getAbsentese,
   getTimeTable,
   getClassNotes,
-  getresult
+  getFeesData,
+  getResult,
 } = require("../supabase/queries");
 const {
   uploadAvatar,
@@ -38,10 +39,10 @@ router.get("/userdata", async (req, res) => {
 });
 
 router.get("/avatar", async (req, res) => {
-  const { email } = req.query;
+  const { admNo } = req.query;
 
-  if (!email) {
-    return res.status(400).json({ error: "Email parameter is required" });
+  if (!admNo) {
+    return res.status(400).json({ error: "admNo parameter is required" });
   }
 
   await getAvatar(req, res);
@@ -60,12 +61,12 @@ router.get("/notification", async (req, res) => {
 });
 
 router.get("/absentlist", async (req, res) => {
-  const { email, class: className, div } = req.query;
+  const { admNo } = req.query;
 
-  if (!email || !className || !div) {
+  if (!admNo) {
     return res
       .status(400)
-      .json({ error: "Email, class, and div parameters are required" });
+      .json({ error: "admNo parameters are required" });
   }
 
   await getAbsentese(req, res);
@@ -75,14 +76,11 @@ router.get("/ticket", async (req, res) => {
   const { admNo } = req.query;
 
   if (!admNo) {
-    return res
-      .status(400)
-      .json({ error: "admNo parameters are required" });
+    return res.status(400).json({ error: "admNo parameters are required" });
   }
 
   await getTicketData(req, res);
 });
-
 
 router.get("/timetable", async (req, res) => {
   const { className, div } = req.query;
@@ -117,7 +115,17 @@ router.get("/result", async (req, res) => {
       .json({ error: "admNo, and examName parameters are required" });
   }
 
-  await getresult(req, res);
+  await getResult(req, res);
+});
+
+router.get("/fees", async (req, res) => {
+  const { admNo } = req.query;
+
+  if (!admNo) {
+    return res.status(400).json({ error: "admNo parameters are required" });
+  }
+
+  await getFeesData(req, res);
 });
 
 router.post("/upload-avatar", upload.single("avatar"), uploadAvatar);
